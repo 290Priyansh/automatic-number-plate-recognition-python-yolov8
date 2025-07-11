@@ -1,23 +1,202 @@
-# **Project Description**
+# **Automatic Number Plate Recognition (ANPR) with YOLOv8**
 
-This project uses YOLOv8 for real-time detection of cars and their number plates in video streams. It integrates object detection, tracking, and optical character recognition (OCR) to automatically identify vehicles, track their movement, and extract and display license plate information from detected number plates. The pipeline also interpolates missing detections for smoother visualization.
-
----
-
-## **How to Run the Project**
-
-1. **Run the main detection/tracking script**  
-   Detects cars and number plates, tracks vehicles, and extracts license plate text.  
-   _Output: Generates `test.csv` with detection and recognition results._
-
-2. **Run `add_missing_data.py`**  
-   Fills in any missing detection data by interpolating between frames.  
-   _Output: Generates `test_interpolated.csv` with interpolated results._
-
-3. **Run `visualize.py`**  
-   Visualizes the results by drawing bounding boxes and displaying license plate information on the video.  
-   _Output: Generates `out.mp4` as the annotated output video._
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![YOLOv8](https://img.shields.io/badge/YOLOv8-FF0000?style=for-the-badge&logo=yolo&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-27338D?style=for-the-badge&logo=opencv&logoColor=white)
+![PyTesseract](https://img.shields.io/badge/PyTesseract-F80000?style=for-the-badge&logo=tesseract&logoColor=white)
 
 ---
 
-Make sure to follow this order for correct results!
+## **📝 Description**
+
+This project implements an **Automatic Number Plate Recognition (ANPR)** system using **YOLOv8** for efficient license plate detection and **Python** for image processing and optical character recognition (OCR).
+
+ANPR is a technology that uses image processing to read vehicle registration plates. This system is designed to identify and extract text from license plates in images or video streams, providing a robust solution for various applications such as traffic monitoring, parking management, security systems, and toll collection.
+
+By leveraging the power of YOLOv8, a state-of-the-art object detection model, the system accurately locates license plates even in challenging conditions, followed by advanced image processing techniques and OCR to extract the alphanumeric characters.
+
+---
+
+## **✨ Features**
+
+* **Accurate License Plate Detection:** Utilizes YOLOv8 for precise and fast detection of number plates in diverse environments.
+* **Optical Character Recognition (OCR):** Integrates with an OCR engine (e.g., Tesseract) to convert detected plate images into readable text.
+* **Image Preprocessing:** Includes steps like grayscale conversion, blurring, and thresholding to enhance character readability for OCR.
+* **Bounding Box Visualization:** Displays bounding boxes around detected license plates and recognized text for clear visualization.
+* **Modular Codebase:** Designed with clear functions for easy understanding, modification, and extension.
+* **Real-time Potential:** Optimized for performance, making it suitable for real-time video stream processing (depending on hardware).
+
+---
+
+## **🛠️ Technologies Used**
+
+* **Python 3.x:** The primary programming language.
+* **YOLOv8 (Ultralytics):** For object detection (specifically, detecting license plates).
+* **OpenCV (`cv2`):** For image and video processing tasks.
+* **NumPy:** For numerical operations, especially array manipulation.
+* **PyTesseract:** Python wrapper for Google's Tesseract-OCR Engine (for character recognition).
+* **Pillow (PIL Fork):** Used by PyTesseract for image handling.
+* **Matplotlib:** For plotting and visualization (optional, for debugging/analysis).
+* **PyTorch:** The deep learning framework that YOLOv8 is built upon.
+
+---
+
+## **🚀 Installation**
+
+Follow these steps to get your ANPR project up and running locally.
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/290Priyansh/automatic-number-plate-recognition-python-yolov8.git](https://github.com/290Priyansh/automatic-number-plate-recognition-python-yolov8.git)
+    cd automatic-number-plate-recognition-python-yolov8
+    ```
+
+2.  **Create a Virtual Environment (Recommended):**
+    ```bash
+    python -m venv venv
+    # On Windows:
+    # .\venv\Scripts\activate
+    # On macOS/Linux:
+    # source venv/bin/activate
+    ```
+
+3.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+    *If you don't have a `requirements.txt` file, you'll need to install them individually:*
+    ```bash
+    pip install opencv-python numpy ultralytics pytesseract Pillow matplotlib
+    ```
+
+4.  **Install Tesseract OCR Engine:**
+    PyTesseract is a wrapper; you need the actual Tesseract executable.
+    * **Windows:** Download the installer from [Tesseract-OCR GitHub](https://github.com/UB-Mannheim/tesseract/wiki). During installation, note the installation path (e.g., `C:\Program Files\Tesseract-OCR`).
+    * **macOS:** `brew install tesseract`
+    * **Linux (Debian/Ubuntu):** `sudo apt install tesseract-ocr`
+
+    **Important for Windows users:** After installing Tesseract, you might need to specify its path in your Python script if it's not in your system's PATH. Add this line at the beginning of your script (replace with your actual path):
+    ```python
+    import pytesseract
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    ```
+
+5.  **Download YOLOv8 Weights:**
+    You'll need a pre-trained YOLOv8 model. You can download the `yolov8n.pt` (nano version, good balance of speed and accuracy) from Ultralytics:
+    ```bash
+    # This will be handled automatically by Ultralytics library when you first run it,
+    # but you can also download it manually and place it in your project root or a 'weights' folder.
+    # Example:
+    # wget [https://github.com/ultralytics/assets/releases/download/v8.1.0/yolov8n.pt](https://github.com/ultralytics/assets/releases/download/v8.1.0/yolov8n.pt)
+    ```
+
+---
+
+## **🚀 Usage**
+
+To run the ANPR system, you can use the main script (assuming `main.py` or similar is your entry point).
+
+**Example Command (assuming `main.py` is your script):**
+
+```bash
+python main.py --source "path/to/your/image_or_video.jpg" --weights yolov8n.pt
+```
+
+**Common `--source` options:**
+
+* **Image file:** `python main.py --source "images/car1.jpg"`
+* **Video file:** `python main.py --source "videos/traffic.mp4"`
+* **Webcam:** `python main.py --source 0` (where `0` is usually the default webcam)
+* **RTSP stream:** `python main.py --source "rtsp://your_stream_url"`
+
+**Example Script Structure (Conceptual):**
+
+```python
+# main.py (Conceptual structure)
+import cv2
+from ultralytics import YOLO
+import pytesseract
+import argparse
+
+# Configure Tesseract path if needed (Windows example)
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+def recognize_plate(image_path, model_weights):
+    # Load YOLO model
+    model = YOLO(model_weights)
+
+    # Perform detection
+    results = model(image_path)
+
+    for r in results:
+        boxes = r.boxes
+        for box in boxes:
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+            confidence = box.conf[0]
+            class_id = box.cls[0]
+
+            # Assuming class_id for license plate is known (e.g., 0)
+            if model.names[int(class_id)] == 'license_plate': # Adjust 'license_plate' based on your model's class names
+                # Crop the license plate
+                plate_img = r.orig_img[y1:y2, x1:x2]
+
+                # Preprocess for OCR (example steps)
+                gray_plate = cv2.cvtColor(plate_img, cv2.COLOR_BGR2GRAY)
+                # You might need more advanced preprocessing here (e.g., adaptive threshold, noise reduction)
+                _, thresh_plate = cv2.threshold(gray_plate, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+                # Perform OCR
+                text = pytesseract.image_to_string(thresh_plate, config='--psm 8') # psm 8 for single word/line
+                print(f"Detected Plate: {text.strip()} (Confidence: {confidence:.2f})")
+
+                # Draw bounding box and text on original image
+                cv2.rectangle(r.orig_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(r.orig_img, text.strip(), (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+    cv2.imshow("ANPR Result", r.orig_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Automatic Number Plate Recognition with YOLOv8")
+    parser.add_argument("--source", type=str, required=True, help="Path to image/video or '0' for webcam")
+    parser.add_argument("--weights", type=str, default="yolov8n.pt", help="Path to YOLOv8 weights file")
+    args = parser.parse_args()
+
+    recognize_plate(args.source, args.weights)
+```
+
+---
+
+## **🎬 See it in Action!**
+
+*(You can replace this with a GIF of your project running once you have one!)*
+
+![ANPR Demo Placeholder](https://placehold.co/600x300/cccccc/333333?text=Your+ANPR+Demo+GIF+Here)
+
+---
+
+## **🤝 Contributing**
+
+Contributions are welcome! If you have suggestions for improvements, new features, or bug fixes, please follow these steps:
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/your-feature-name`).
+3.  Make your changes.
+4.  Commit your changes (`git commit -m 'Add new feature'`).
+5.  Push to the branch (`git push origin feature/your-feature-name`).
+6.  Create a new Pull Request.
+
+---
+
+## **📄 License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## **📧 Contact**
+
+Priyansh - [Your GitHub Profile Link Here](https://github.com/290Priyansh)
+
+---
