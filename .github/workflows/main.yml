@@ -2,17 +2,17 @@ name: Update README Tomorrow
 
 on:
   schedule:
-    # This cron expression means:
-    # At 03:30 AM UTC, on day 12 of the month, in July, and on any day of the week.
-    # This is equivalent to 9:00 AM IST on July 12, 2025.
-    - cron: '30 3 12 7 *'
+    - cron: '30 3 12 7 *' # 9:00 AM IST on July 12, 2025
 
-  # Allows you to manually run this workflow from the Actions tab
   workflow_dispatch:
 
 jobs:
   update_readme:
     runs-on: ubuntu-latest
+    # --- ADD THESE TWO LINES HERE ---
+    permissions:
+      contents: write
+    # --------------------------------
 
     steps:
     - name: Checkout repository
@@ -20,8 +20,6 @@ jobs:
 
     - name: Write new content to README.md
       run: |
-        # Use 'cat' with a "here-document" to write the entire README content
-        # This will OVERWRITE the existing README.md file.
         cat > README.md << 'EOF'
         # **Automatic Number Plate Recognition (ANPR) with YOLOv8**
 
