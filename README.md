@@ -41,10 +41,3 @@ By leveraging the power of YOLOv8, a state-of-the-art object detection model, th
 
 ---
 
-
-
-## **📧 Contact**
-
-Priyansh - [Your GitHub Profile Link Here](https://github.com/290Priyansh)
-
----
